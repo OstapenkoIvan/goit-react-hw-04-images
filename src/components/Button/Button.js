@@ -1,22 +1,20 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React from 'react';
 
-export class Button extends Component {
-  static propTypes = {
-    handleClick: PropTypes.func.isRequired,
+function Button({ handleClick }) {
+  const onClickEvent = e => {
+    handleClick(e);
   };
 
-  onClickEvent = e => {
-    this.props.handleClick(e);
-  };
-
-  render() {
-    return (
-      <div type="button" className="Button" onClick={this.onClickEvent}>
-        Load more
-      </div>
-    );
-  }
+  return (
+    <div type="button" className="Button" onClick={onClickEvent}>
+      Load more
+    </div>
+  );
 }
+
+Button.prototype = {
+  handleClick: PropTypes.func.isRequired,
+};
 
 export default Button;

@@ -1,26 +1,16 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 
-export class SearchForm extends Component {
-  static propTypes = {
-    input: PropTypes.string,
-    onSub: PropTypes.func.isRequired,
+function SearchForm({ onSub }) {
+  const [input, setInput] = useState('');
+
+  const handleInput = e => {
+    setInput(e.target.value);
   };
 
-  state = {
-    input: '',
-  };
-
-  handleInput = e => {
-    this.setState({
-      input: e.target.value,
-    });
-  };
-
-  handleSubmit = e => {
+  const handleSubmit = e => {
     e.preventDefault();
-    const { input } = this.state;
 
     if (input.trim() === '') {
       return toast.warn('Enter search name!', {
@@ -34,29 +24,30 @@ export class SearchForm extends Component {
       });
     }
 
-    this.props.onSub(input);
+    onSub(input);
   };
 
-  render() {
-    const { input } = this.state;
-    return (
-      <form className="SearchForm" onSubmit={this.handleSubmit}>
-        <button type="submit" className="SearchForm-button">
-          <span className="SearchForm-button-label">Search</span>
-        </button>
+  return (
+    <form className="SearchForm" onSubmit={handleSubmit}>
+      <button type="submit" className="SearchForm-button">
+        <span className="SearchForm-button-label">Search</span>
+      </button>
 
-        <input
-          className="SearchForm-input"
-          type="text"
-          autoComplete="off"
-          autoFocus
-          placeholder="Search images and photos"
-          value={input}
-          onChange={this.handleInput}
-        />
-      </form>
-    );
-  }
+      <input
+        className="SearchForm-input"
+        type="text"
+        autoComplete="off"
+        autoFocus
+        placeholder="Search images and photos"
+        value={input}
+        onChange={handleInput}
+      />
+    </form>
+  );
 }
+
+SearchForm.propTypes = {
+  onSub: PropTypes.func.isRequired,
+};
 
 export default SearchForm;
