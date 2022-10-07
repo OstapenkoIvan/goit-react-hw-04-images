@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import SearchBar from './SearchBar/SearchBar';
-import ImageGallery from './ImageGallery/ImageGallery';
+
+import { ThreeCircles } from 'react-loader-spinner';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
+import SearchBar from './SearchBar/SearchBar';
+import ImageGallery from './ImageGallery/ImageGallery';
+import FetchImages from '../api/GalleryApi';
 import Button from './Button/Button';
-import { ThreeCircles } from 'react-loader-spinner';
-import FetchImages from './GalleryApi/GalleryApi';
-import { useRef } from 'react';
 
 function App() {
   const [page, setPage] = useState(1);
@@ -14,23 +15,20 @@ function App() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const params = useRef({
-    ADDRESS: 'https://pixabay.com/api/',
-    KEY: '29510729-da386a69ed783c050b927561b',
-  });
-
   useEffect(() => {
     if (input) {
-      const { ADDRESS, KEY } = params.current;
       setLoading(true);
 
-      FetchImages(ADDRESS, KEY, page, input)
-        .then(imgArr => setData(prevData => [...prevData, ...imgArr.hits]))
+      FetchImages(page, input)
+        .then(imgArr => {
+          if (page > 1) setData(prevData => [...prevData, ...imgArr.hits]);
+          else setData(imgArr.hits);
+        })
         .catch(error => console.log(error))
         .finally(setLoading(false));
       return;
     }
-  }, [input, page, params]);
+  }, [input, page]);
 
   const onSubmit = input => {
     setInput(input);
